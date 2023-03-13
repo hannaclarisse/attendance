@@ -8,7 +8,6 @@ if (!isset($_SESSION["user_id"])) {
     exit();
 }
 $id = $_SESSION["user_id"];
-
 $dbh = new databaseHandler;
 
 if (isset($_POST["GET_TIMEINOUT"])) {

@@ -88,6 +88,55 @@ class databaseHandler{
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
+
+    function getFullname($id)
+    {
+        $sql = "SELECT CONCAT(lName, ',', ' ', fName, ' ', IFNULL(mName, '')) AS fullName FROM users WHERE id='$id'";
+        $result = mysqli_query($this->conn, $sql);
+        if (mysqli_num_rows($result)) {
+            $row = mysqli_fetch_assoc($result);
+            return $row['fullName'];
+        } else {
+            return '';
+        }
+    }
+
+    function getValueByID($value, $id, $table = "users")
+    {
+        $sql = "SELECT `$value` FROM $table WHERE id=$id";
+        $result = mysqli_query($this->conn, $sql);
+        if (mysqli_num_rows($result)) {
+            if ($row = mysqli_fetch_assoc($result)) {
+                return $row[$value];
+            }
+        }
+    }
+
+    function profileUpdate($value, $id)
+    {
+        $sql = "UPDATE `users` SET fName='$value->firstName', mName='$value->middleName', lName='$value->lastName', email='$value->email',
+         contact='$value->contact_no' WHERE id=$id";
+        $result = mysqli_query($this->conn, $sql);
+        return $result;
+    }
+
+    function getSpecificInfo($id, $col)
+    {
+        $sql = "SELECT $col FROM users WHERE id='$id'";
+        $result = mysqli_query($this->conn, $sql);
+        if (mysqli_num_rows($result)) {
+            $row = mysqli_fetch_assoc($result);
+            return $row[$col];
+        } else {
+            return 0;
+        }
+    }
+
+    function updateSpecificInfo($id, $col, $value)
+    {
+        $sql = "UPDATE `users` SET $col='$value' WHERE id=$id";
+        return mysqli_query($this->conn, $sql);
+    }
 }
 
 ?>

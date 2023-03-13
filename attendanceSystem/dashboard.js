@@ -54,10 +54,10 @@ $(document).ready(function () {
             var outTime = "";
             response.forEach(data => {
                 console.log("fetch?");
-                if (data.status == "out") {
-                    outTime = moment(data.dateTime);
+                if (data.status == "Time out") {
+                    outTime = moment(data.datetime);
                 } else {
-                    inTime = moment(data.dateTime);
+                    inTime = moment(data.datetime);
                 }
                 if (outTime == "") {
                     content = {
@@ -89,6 +89,7 @@ $(document).ready(function () {
                 }
             });
             createCalendarHeatmap(attendance);
+            console.log(attendance);
             getHighest(attendance);
             getLowest(attendance);
             displayAttendance(response);
@@ -108,6 +109,7 @@ $(document).ready(function () {
 });
 
 function createCalendarHeatmap(attendance) {
+    console.log(attendance);
     var heatmap = ``;
     for (let mon = 0; mon < 12; mon++) {
         const calendar = [];
@@ -134,11 +136,11 @@ function createCalendarHeatmap(attendance) {
                         if (entry.inDate == formattedDate) {
                             // late
                             // early out
-                            // if (entry.hours == "") {
-                            //     bgColor = "";
-                            // }
+                            if (entry.hours == "") {
+                                bgColor = "";
+                            }
                             // under time
-                            if (entry.hours <= 8 && entry.minutes < 30) {
+                            if (entry.hours <= 8) {
                                 bgColor = "bg-info";
                             }
                             // over time
@@ -210,7 +212,7 @@ function displayAttendance(response) {
     response.forEach(data => {
             content += `<tr>
             <td>${data.status}</td>
-            <td>${data.datetime}</td>
+            <td>${moment(data.datetime).format('LLLL')}</td>
             </tr>`;
     });
     $("#attendance").html(content);

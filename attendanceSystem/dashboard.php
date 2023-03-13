@@ -1,8 +1,8 @@
 <?php
-include('sql/scripts.php');
+include_once('sql/scripts.php');
 $dbh = new databaseHandler;
-// $userData = $dbh->getUserInfo($_SESSION['id']);
-
+$id = $_SESSION["user_id"];
+$userData = $dbh->getUserInfo($id);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +17,7 @@ $dbh = new databaseHandler;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.js"></script>
     <script src="https://kit.fontawesome.com/b463120fe4.js" crossorigin="anonymous"></script>
+    <script src="dashboardProfile.js"></script>
 </head>
 
 <body>
@@ -24,10 +25,10 @@ $dbh = new databaseHandler;
         <div class="container-fluid justify-content-between">
             <div style="margin-left:45px">
 
-                <h1 class="text-light"> <i class="fa-solid fa-user" ></i> Welcome! </h1>
+                <h1 class="text-light"> <i class="fa-solid fa-user"></i> Welcome <?php echo $userData->fName; ?>! </h1>
             </div>
             <div style="margin-right:45px">
-                <a href="logout.php"> Sign out</a> 
+                <a href="logout.php"> Sign out</a>
                 <button class="btn btn-primary" style="margin-left:15px" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions"> Settings </button>
             </div>
 
@@ -87,13 +88,21 @@ $dbh = new databaseHandler;
 
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Backdrop with scrolling</h5>
+            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Settings</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <p>Try scrolling the rest of the page to see this option in action.</p>
+            <h2 class="text-capitalize"><?php echo $dbh->getFullname($id); ?></h2>
+            <!--  -->
+            <p>Email Address: <?php echo $dbh->getValueByID('email', $id); ?></p>
+            <p>Contact Number: <?php echo $dbh->getValueByID('contact', $id); ?></p>
+            <!-- <button class="btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop" type="button">Edit Profile</button> -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Edit Profile
+            </button>
         </div>
     </div>
+    <!-- end -->
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -105,5 +114,101 @@ $dbh = new databaseHandler;
     <script src="dashboard.js"></script>
     <link rel="stylesheet" href="dashboard.css">
 </body>
+
+<!-- MODAL -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" type="button" aria-current="page" id="profileInfo">Edit Info</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" type="button" id="passBtn">Change Password</a>
+                    </li>
+                </ul>
+
+                <form id="profileForm">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row g-2">
+                                <div class="col">
+                                    <div class="mb-3 ">
+                                        <label for="lastName" class="form-label">*Last Name</label>
+                                        <input type="text" class="form-control" id="lName" name="lName" value="<?php echo $dbh->getValueByID('lName', $id); ?>">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3 ">
+                                        <label for="firstName" class="form-label">*First Name</label>
+                                        <input type="text" class="form-control" id="fName" name="fName" value="<?php echo $dbh->getValueByID('fName', $id); ?>">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3 ">
+                                        <label for="middleName" class="form-label">Middle Initials </label>
+                                        <input type="text" class="form-control" id="mName" name="mName" value="<?php echo $dbh->getValueByID('mName', $id); ?>" placeholder="(optional)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3 ">
+                                        <label for="Email" class="form-label">*Email Address </label>
+                                        <input type="email" class="form-control" name="email" value="<?php echo $dbh->getValueByID('email', $id); ?>">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3 ">
+                                        <label for="ContactNumber" class="form-label">*Contact Number </label>
+                                        <input type="text" class="form-control " name="contact" value="<?php echo $dbh->getValueByID('contact', $id); ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- <div class="alert alert-danger mt-3" role="alert" id="alertError">
+                            </div>
+                            <div class="alert alert-success mt-3" role="alert" id="alertSuccess">
+                            </div> -->
+                            <button type="submit" name="upload" class="btn btn-primary form-control mt-3">Save Changes</button>
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                </form>
+
+                <form id="changePassForm" class="row g-3 p-3  ms-auto me-auto" style="width: 400px;">
+                    <div class="col-12 fw-bold">
+                        <label for="inputAddress" class="form-label">Current Password:</label>
+                        <input type="password" class="password form-control" id="inputAddressOld" name="oldPass" required>
+                    </div>
+                    <div class="col-12 fw-bold">
+                        <label for="inputAddress" class="form-label">New Password:</label>
+                        <input type="password" class="password form-control" id="inputAddressNew" name="newPass" required>
+                    </div>
+                    <div class="col-12 fw-bold">
+                        <label for="inputAddress" class="form-label">Confirm Password:</label>
+                        <input type="password" class="password form-control" id="inputAddressConfirm" name="confirmPass" required>
+                    </div>
+
+                    <div class="alert alert-danger mt-3 form-control" role="alert" id="errorPass">
+                    </div>
+
+                    <div class="mt-2 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary mt-3 mb-5 float-right" id="savepass" name="savepass">Save changes</button>
+                    </div>
+                </form>
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div> -->
+        </div>
+    </div>
+</div>
 
 </html>
