@@ -75,8 +75,9 @@ $userData = $dbh->getUserInfo($id);
         <table class="table table-bordered table-striped" id="resultTable">
             <thead>
                 <tr>
+                    <th>Date</th>
+                    <th>Time</th>
                     <th>Status</th>
-                    <th>Date and Time</th>
                 </tr>
             </thead>
             <tbody id="attendance">

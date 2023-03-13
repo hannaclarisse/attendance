@@ -211,8 +211,9 @@ function displayAttendance(response) {
     var content = ``;
     response.forEach(data => {
             content += `<tr>
+            <td>${moment(data.datetime).format('LL')}</td>
+            <td>${moment(data.datetime).format('LT')}</td>
             <td>${data.status}</td>
-            <td>${moment(data.datetime).format('LLLL')}</td>
             </tr>`;
     });
     $("#attendance").html(content);
